@@ -120,7 +120,7 @@ class NaveeBleManager(private val context: Context) {
     private val scanCallback = object : ScanCallback() {
         override fun onScanResult(callbackType: Int, result: ScanResult) {
             val device = result.device
-            val name = device.name ?: return
+            val name = result.scanRecord?.deviceName ?: device.name ?: return
 
             if (!name.startsWith("Navee", ignoreCase = true) &&
                 !name.startsWith("NV", ignoreCase = true) &&
