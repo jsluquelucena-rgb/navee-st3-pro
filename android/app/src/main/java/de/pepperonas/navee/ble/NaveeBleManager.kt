@@ -119,7 +119,12 @@ class NaveeBleManager(private val context: Context) {
 
     private val scanCallback = object : ScanCallback() {
         override fun onScanResult(callbackType: Int, result: ScanResult) {
-            val device = result.device
+
+    if (_connectionState.value != ConnectionState.SCANNING) {
+        return
+    }
+
+    val device = result.device
             val name = result.scanRecord?.deviceName ?: device.name ?: return
 
             if (!name.startsWith("Navee", ignoreCase = true) &&
@@ -127,7 +132,7 @@ class NaveeBleManager(private val context: Context) {
                 !name.startsWith("ST3", ignoreCase = true)) {
                 return
             }
-
+            _connectionState.value = ConnectionState.CONNECTING
             adapter?.bluetoothLeScanner?.stopScan(this)
             _deviceName.value = name
             _macAddress.value = device.address
@@ -139,9 +144,14 @@ class NaveeBleManager(private val context: Context) {
             _pid.value = pid
             Log.i(TAG, "PID=$pid, scanRecord=${scanRecord?.joinToString(" ") { "%02X".format(it) }}")
 
-            _connectionState.value = ConnectionState.CONNECTING
-            device.connectGatt(context, false, gattCallback, BluetoothDevice.TRANSPORT_LE)
-        }
+            bluetoothGatt?.close()
+
+            bluetoothGatt = device.connectGatt(
+            context,
+            false,
+            gattCallback,
+            BluetoothDevice.TRANSPORT_LE
+        )
 
         override fun onScanFailed(errorCode: Int) {
             Log.e(TAG, "Scan failed: $errorCode")
