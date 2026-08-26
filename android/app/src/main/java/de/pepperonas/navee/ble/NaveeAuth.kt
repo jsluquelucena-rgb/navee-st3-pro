@@ -57,7 +57,7 @@ object NaveeAuth {
     /** Load credentials from SharedPreferences. */
     fun init(context: Context) {
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-        deviceId = prefs.getString(KEY_DEVICE_ID, null)?.hexToByteArray()
+        deviceId = prefs.getString(KEY_DEVICE_ID, null)?.hexToByteArray() ?: "880004353D71".hexToByteArray()
         postAuthParams = prefs.getString(KEY_POST_AUTH_PARAMS, null)?.hexToByteArray()
         Log.i(TAG, "Loaded credentials: hasDeviceId=${deviceId != null}, hasPostAuth=${postAuthParams != null}")
     }
