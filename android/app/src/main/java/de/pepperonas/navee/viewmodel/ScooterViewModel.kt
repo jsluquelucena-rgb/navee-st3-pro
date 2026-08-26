@@ -73,9 +73,6 @@ class ScooterViewModel(app: Application) : AndroidViewModel(app) {
                     ConnectionState.DISCONNECTED -> {
                         _authenticated.value = false
                         pollingJob?.cancel()
-                        delay(3000)
-                        if (ble.connectionState.value == ConnectionState.DISCONNECTED) {
-                            ble.startScan()
                         }
                     }
                     else -> {}
