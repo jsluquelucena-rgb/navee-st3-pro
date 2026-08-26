@@ -86,9 +86,32 @@ object NaveeAuth {
         return NaveeProtocol.buildFrame(NaveeProtocol.CMD_AUTH, data)
     }
 
-    fun buildPostAuthParams(): ByteArray? {
-        val params = postAuthParams ?: return null
-        return NaveeProtocol.buildFrame(NaveeProtocol.CMD_SET_PARAMS, params)
+    fun buildPostAuthParams(): ByteArray {
+    val nowMillis = System.currentTimeMillis()
+
+    val timezoneOffset =
+        TimeZone.getDefault().getOffset(nowMillis) / 1000L
+
+    val timestamp =
+        (nowMillis / 1000L + timezoneOffset).toInt()
+
+    val params = byteArrayOf(
+        0x06,
+        ((timestamp ushr 24) and 0xFF).toByte(),
+        ((timestamp ushr 16) and 0xFF).toByte(),
+        ((timestamp ushr 8) and 0xFF).toByte(),
+        (timestamp and 0xFF).toByte()
+    )
+
+    Log.i(
+        TAG,
+        "Post-auth 0x6F timestamp=%08X".format(timestamp)
+    )
+
+    return NaveeProtocol.buildFrame(
+        NaveeProtocol.CMD_SET_PARAMS,
+        params
+    )
     }
 
     fun processAuthResponse(data: ByteArray): ByteArray? {
