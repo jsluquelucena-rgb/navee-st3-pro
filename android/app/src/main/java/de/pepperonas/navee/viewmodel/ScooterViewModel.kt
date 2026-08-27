@@ -74,7 +74,7 @@ class ScooterViewModel(app: Application) : AndroidViewModel(app) {
                         _authenticated.value = false
                         pollingJob?.cancel()
                         }
-                    }
+                    
                     else -> {}
                 }
             }
