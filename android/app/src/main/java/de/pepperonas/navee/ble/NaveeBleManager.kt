@@ -152,7 +152,7 @@ class NaveeBleManager(private val context: Context) {
             gattCallback,
             BluetoothDevice.TRANSPORT_LE
         )
-
+        }
         override fun onScanFailed(errorCode: Int) {
             Log.e(TAG, "Scan failed: $errorCode")
             _connectionState.value = ConnectionState.DISCONNECTED
